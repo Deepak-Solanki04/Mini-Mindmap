@@ -1,0 +1,9 @@
+{
+  "name": "mini-mindmap",
+  "version": "1.0.0",
+  "description": "Visualli AI Challenge: Mini Mindmap",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
