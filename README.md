@@ -1,28 +1,25 @@
-# 🧠 Mini Mindmap
+# Mini Mindmap
 
-A full-stack application that transforms raw text into an interactive, node-link mindmap using AI. Built as part of the Visualli AI Challenge.
+This is my submission for the Visualli AI Challenge. It's a full-stack application that takes a block of text and turns it into an interactive mindmap using AI.
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
-### Prerequisites
-- Node.js (v18+)
-- npm (v9+)
+You need Node.js (v18+) and npm installed to run this project.
 
-### Installation
 1. Clone the repository:
    ```bash
    git clone https://github.com/Deepak-Solanki04/Mini-Mindmap.git
    cd Mini-Mindmap
    ```
-2. Install dependencies across all monorepo workspaces:
+2. Install dependencies:
    ```bash
    npm install
    ```
 
 ### Running the Application
 
-#### 1. Mock Mode (Without API Key)
-If you do not have a Gemini API key (or if you are on a restricted free tier with a 0-quota limit), you can run the application in Mock Mode. This bypasses the LLM and returns a structured, realistic canned response.
+**Option 1: Mock Mode (No API Key Required)**
+If you don't want to set up an API key, you can run the app in Mock Mode. It bypasses the LLM and just returns a hardcoded mindmap structure so you can test the UI.
 
 1. Start the backend:
    ```bash
@@ -32,40 +29,38 @@ If you do not have a Gemini API key (or if you are on a restricted free tier wit
    # On Mac/Linux:
    MOCK_MODE=true npm run dev
    ```
-2. Start the frontend (in a new terminal):
+2. Start the frontend in a new terminal:
    ```bash
    cd packages/frontend
    npm run dev
    ```
 
-#### 2. Live AI Mode
-1. Navigate to `packages/backend` and create a `.env` file:
+**Option 2: Live AI Mode**
+1. Go to `packages/backend` and create a `.env` file:
    ```env
    GEMINI_API_KEY=your_real_api_key_here
    PORT=3001
    ```
 2. Start the backend: `cd packages/backend && npm run dev`
-3. Start the frontend: `cd packages/frontend && npm run dev`
+3. Start the frontend in a new terminal: `cd packages/frontend && npm run dev`
 
-## 🤖 AI & LLM Provider
+## AI Provider
 
-- **LLM Provider:** Google Gen AI (`@google/genai` SDK)
-- **Model Used:** `gemini-2.0-flash`
-- **Why this provider?** Google's Gemini models have excellent, natively supported `responseMimeType: 'application/json'` capabilities, making it extremely reliable for enforcing the strict Zod data contract (5-9 nodes, valid edge mappings) required by this challenge.
+I used Google Gen AI (the `@google/genai` SDK) with the `gemini-2.0-flash` model. I chose Gemini because it has really solid native support for JSON structured output (`responseMimeType: 'application/json'`). This made it a lot easier to enforce the strict schema requirements (like exactly 5-9 nodes and valid edges) without having to write crazy regex parsers.
 
-## ⏱️ Time Note & Tradeoffs
+## Time Note & Tradeoffs
 
-**Time Spent:** Roughly 12-15 hours over the course of a week, broken down into granular, step-by-step commits to ensure each vertical slice of the application was solid before moving on.
+**Time Spent:** I spent about 12-15 hours on this over the last week. I tried to build it step by step to make sure each piece was solid before moving on.
 
-### Tradeoffs Made Under Time Pressure
-- **In-Memory Storage over SQLite:** The instructions mentioned `better-sqlite3` as a nice-to-have. However, configuring `better-sqlite3` on Windows often leads to native C++ compilation errors (`node-gyp`). To guarantee that reviewers could clone and run the app flawlessly without environment headaches, I opted for a robust In-Memory `Map` store in `db.ts`. The persistence logic is entirely abstracted, so swapping to a real DB would only take a few minutes of altering the repository layer.
-- **Custom Radial Math over Auto-Layout:** Instead of relying on a heavy auto-layout engine like `dagre` or `ELK`, I wrote a lightweight sine/cosine algorithm to place the root node in the center and orbit the child nodes around it. While this works beautifully for a 5-9 node limit, it would struggle with complex nested hierarchies.
+### Tradeoffs
+- **In-Memory Storage vs SQLite:** The prompt mentioned SQLite was a nice-to-have, but setting up `better-sqlite3` on Windows can sometimes cause annoying native compilation errors with node-gyp. Since I wanted reviewers to be able to just clone and run it without environment issues, I went with an in-memory Map for the database. The DB logic is fully isolated though, so swapping it for a real database later would be pretty quick.
+- **Custom Layout Math vs Auto-Layout Library:** Instead of using a heavy graphing library like `dagre`, I just wrote a quick math function to put the root node in the center and arrange the child nodes in a circle around it. It works perfectly for 5-9 nodes, but it definitely wouldn't scale well to massive nested graphs.
 
 ### Rough Edges
-- **Error Handling Granularity:** While the frontend gracefully displays the fallback error toast when the backend fails to self-heal the JSON structure, the UI does not distinguish between a Zod validation failure and a Quota Exceeded (429) error from Google in a highly customized way.
+- **Error Handling:** The frontend shows a nice toast notification when the backend throws an error. However, it doesn't do a great job of explaining exactly what went wrong (e.g., distinguishing between a quota exceeded error from Google vs a validation failure). 
 
-## 🔮 What I Would Improve With More Time
+## What I Would Improve With More Time
 
-1. **Streaming Generation (Server-Sent Events):** Instead of making the user stare at a blocking "Generating..." spinner, I would stream the JSON chunks from Gemini and visually build the mindmap nodes one by one on the canvas in real-time.
-2. **Drill-down Expansion:** Currently, clicking a node just shows a sliding summary panel. With more time, I would add a "Generate Sub-Nodes" button to the panel. Clicking it would send just that node's summary back to the LLM to recursively branch out the mindmap.
-3. **Database Persistence:** I would add Prisma + PostgreSQL (or standard SQLite if the environment is strictly controlled) so that generated mindmaps survive a server restart and can be shared via URL params.
+1. **Streaming Generation:** Making the user wait for a loading spinner isn't the best UX. I'd love to use Server-Sent Events to stream the JSON chunks from Gemini so the mindmap nodes appear on the screen one by one.
+2. **Drill-down Expansion:** Right now, clicking a node just shows the summary. It would be cool to add a "Generate More" button that sends that specific node's summary back to the LLM to generate a whole new branch of child nodes.
+3. **Database:** I'd definitely add Prisma and PostgreSQL if I had more time so that users could save their mindmaps and share them via URL links.
