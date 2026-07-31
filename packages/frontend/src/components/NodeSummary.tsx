@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Info } from 'lucide-react';
-import { MindmapNode } from '../types';
+import type { MindmapNode } from '../types';
 
 interface NodeSummaryProps {
   node: MindmapNode | null;

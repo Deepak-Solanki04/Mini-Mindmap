@@ -3,7 +3,7 @@ import axios from 'axios';
 import InputArea from './components/InputArea';
 import MindmapGraph from './components/MindmapGraph';
 import NodeSummary from './components/NodeSummary';
-import { Mindmap, MindmapNode } from './types';
+import type { Mindmap, MindmapNode } from './types';
 import './App.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';

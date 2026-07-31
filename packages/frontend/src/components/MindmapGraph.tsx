@@ -11,7 +11,7 @@ import {
   MarkerType,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { Mindmap, MindmapNode as AppNode } from '../types';
+import type { Mindmap, MindmapNode as AppNode } from '../types';
 
 interface MindmapGraphProps {
   mindmap: Mindmap | null;
