@@ -6,10 +6,9 @@ import {
   Background,
   useNodesState,
   useEdgesState,
-  Node,
-  Edge,
   MarkerType,
 } from '@xyflow/react';
+import type { Node, Edge } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import type { Mindmap, MindmapNode as AppNode } from '../types';
 
