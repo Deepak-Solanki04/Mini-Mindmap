@@ -21,7 +21,7 @@ app.post('/api/mindmaps', async (req: Request, res: Response): Promise<void> => 
     res.status(201).json(storedMindmap);
   } catch (error: any) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ error: error.errors[0].message });
+      res.status(400).json({ error: (error as any).errors[0].message });
       return;
     }
     console.error("Error generating mindmap:", error);
@@ -34,7 +34,7 @@ app.get('/api/mindmaps', (req: Request, res: Response) => {
 });
 
 app.get('/api/mindmaps/:id', (req: Request, res: Response): void => {
-  const mindmap = getMindmapById(req.params.id);
+  const mindmap = getMindmapById(req.params.id as string);
   if (!mindmap) {
     res.status(404).json({ error: "Mindmap not found" });
     return;
